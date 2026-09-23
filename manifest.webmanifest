@@ -1,0 +1,17 @@
+{
+  "name": "Libreta de Reservas",
+  "short_name": "Reservas",
+  "description": "Registro y lista de reservas para excursiones.",
+  "lang": "es-MX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FAF4E1",
+  "theme_color": "#6B4A2E",
+  "icons": [
+    { "src": "icono-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icono-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
