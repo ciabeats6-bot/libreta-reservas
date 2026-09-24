@@ -28,14 +28,14 @@
     color-scheme:dark;
     --ground:#1C1510; --surface:#261D16; --ink:#F2E7CF; --muted:#B5A185; --line:#3A2C20;
     --accent:#F0C136; --accent-ink:#1C1510; --brown:#D8B48A; --soft:#33271B; --danger:#E0795F; --ok:#9CC47A; --resumen-alerta:#8E2F1D;
-    --logo-filtro:drop-shadow(0 0 1px rgba(250,244,225,.95)) drop-shadow(0 0 5px rgba(250,244,225,.35));
+    --logo-filtro:drop-shadow(0 0 1px rgba(250,244,225,.22));
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-tema="claro"]){
       color-scheme:dark;
       --ground:#1C1510; --surface:#261D16; --ink:#F2E7CF; --muted:#B5A185; --line:#3A2C20;
       --accent:#F0C136; --accent-ink:#1C1510; --brown:#D8B48A; --soft:#33271B; --danger:#E0795F; --ok:#9CC47A; --resumen-alerta:#8E2F1D;
-      --logo-filtro:drop-shadow(0 0 1px rgba(250,244,225,.95)) drop-shadow(0 0 5px rgba(250,244,225,.35));
+      --logo-filtro:drop-shadow(0 0 1px rgba(250,244,225,.22));
   }
 }
 *{box-sizing:border-box}
@@ -237,15 +237,17 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
 
 /* pantalla de inicio (splash) */
 .splash{position:fixed;inset:0;z-index:100;background:var(--ground);display:grid;place-items:center}
-.splash img{width:min(46vw,200px);height:auto;opacity:0;filter:var(--logo-filtro);animation:splashLogo 1.5s ease-in-out forwards}
-@keyframes splashLogo{0%{opacity:0;transform:scale(.9)}40%{opacity:1;transform:scale(1)}72%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05)}}
+.splash img{width:min(46vw,200px);height:auto;opacity:0;filter:var(--logo-filtro)}
+.splash img.anima{animation:splashLogo 1.35s ease-in-out forwards}
+/* Aparece (fade in + ligero acercamiento), se mantiene y desaparece (fade out) sin cambiar de tamaño */
+@keyframes splashLogo{0%{opacity:0;transform:scale(.94)}40%{opacity:1;transform:scale(1)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
 .splash.fuera{animation:splashFuera .45s ease forwards}
 @keyframes splashFuera{to{opacity:0;visibility:hidden}}
 /* Se animan las piezas del encabezado y no .top: si .top se transforma, la barra de pestañas
    (position:fixed dentro de .top en el iPhone) se ubicaría respecto a él y aparecería arriba. */
 body.entrando .brand,body.entrando .logo,body.entrando main,body.entrando .tabs{animation:entradaApp .6s cubic-bezier(.22,.8,.26,1) both}
 @keyframes entradaApp{from{opacity:0;transform:translateY(14px) scale(.985)}}
-@media (prefers-reduced-motion:reduce){.splash img{opacity:1}}
+@media (prefers-reduced-motion:reduce){.splash img,.splash img.anima{opacity:1;animation:none}}
 
 /* aviso flotante */
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;background:var(--brown);color:var(--ground);padding:14px 22px;border-radius:12px;font-weight:600;font-size:16px;transition:opacity .2s,transform .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20}
@@ -1117,11 +1119,20 @@ $("#cerrarInstalar").addEventListener("click", ()=>{ $("#instalar").hidden = tru
 // Splash solo al abrir la app desde cero (no al volver a ella desde segundo plano)
 (function(){
   const splash = $("#splash"); if (!splash) return;
+  const img = splash.querySelector("img");
   const breve = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  setTimeout(()=>{
-    splash.classList.add("fuera"); document.body.classList.add("entrando");
-    setTimeout(()=>{ splash.remove(); document.body.classList.remove("entrando"); }, 650);
-  }, breve ? 350 : 1450);
+  let empezo = false;
+  // Todo el splash se sincroniza con la imagen: la salida ocurre justo cuando el logo termina de desvanecerse.
+  function empezar(){
+    if (empezo) return; empezo = true;
+    img.classList.add("anima");
+    setTimeout(()=>{
+      splash.classList.add("fuera"); document.body.classList.add("entrando");
+      setTimeout(()=>{ splash.remove(); document.body.classList.remove("entrando"); }, 650);
+    }, breve ? 350 : 1300);
+  }
+  (img.decode ? img.decode() : Promise.resolve()).then(empezar, empezar);
+  setTimeout(empezar, 1200);   // por si la imagen tarda en cargar
 })();
 formNuevo();
 pintarGithub();
