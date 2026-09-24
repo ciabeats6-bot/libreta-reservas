@@ -15,7 +15,7 @@
 <style>
 :root{
   --ground:#FAF4E1; --surface:#FFFCF2; --ink:#35261A; --muted:#7D6752; --line:#E7DAB5;
-  --accent:#E9B41F; --accent-ink:#35261A; --brown:#6B4A2E; --soft:#F4E7BD; --danger:#A8412B; --ok:#4E7A32;
+  --accent:#E9B41F; --accent-ink:#35261A; --brown:#6B4A2E; --soft:#F4E7BD; --danger:#A8412B; --ok:#4E7A32; --resumen-alerta:#F2C94C;
   --serif:ui-serif,"New York",Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"Helvetica Neue",sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -25,7 +25,7 @@
   :root{
     color-scheme:dark;
     --ground:#1C1510; --surface:#261D16; --ink:#F2E7CF; --muted:#B5A185; --line:#3A2C20;
-    --accent:#F0C136; --accent-ink:#1C1510; --brown:#D8B48A; --soft:#33271B; --danger:#E0795F; --ok:#9CC47A;
+    --accent:#F0C136; --accent-ink:#1C1510; --brown:#D8B48A; --soft:#33271B; --danger:#E0795F; --ok:#9CC47A; --resumen-alerta:#8E2F1D;
   }
 }
 *{box-sizing:border-box}
@@ -45,6 +45,8 @@ input[type=number]{-moz-appearance:textfield}
 /* barra superior */
 .top{position:sticky;top:0;z-index:5;background:var(--ground);border-bottom:2px solid var(--brown);padding:calc(14px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 0 calc(24px + env(safe-area-inset-left,0px));display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
 .brand{font-family:var(--serif);font-size:26px;color:var(--brown);padding-bottom:12px;line-height:1}
+.brand-fila{display:flex;align-items:center;gap:14px}
+.logo{height:52px;width:auto;flex:none}
 .brand small{display:block;font-family:var(--sans);font-size:12px;color:var(--muted);margin-top:6px;line-height:1.2}
 .brand small:empty{display:none}
 .brand small.err{color:var(--danger);font-weight:600}
@@ -75,10 +77,6 @@ main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env
 .paso:disabled{opacity:.4}
 #personas{flex:1;min-width:0;width:0;border:0;background:transparent;text-align:right;font-family:var(--mono);font-size:64px;font-weight:500;line-height:1;padding:4px 0;outline:none}
 .kg-unit{font-family:var(--serif);font-size:28px;color:var(--muted);padding-right:8px}
-.rapidos{display:flex;flex-wrap:wrap;gap:8px}
-.rapidos button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-family:var(--mono);font-size:15px;min-width:44px}
-.rapidos button:hover{border-color:var(--brown)}
-.rapidos button[aria-pressed="true"]{background:var(--brown);border-color:var(--brown);color:var(--ground)}
 .previa{color:var(--muted);font-size:16px;min-height:1.4em}
 .previa strong{color:var(--ink);font-family:var(--mono);font-weight:600}
 
@@ -136,11 +134,9 @@ main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env
 
 /* ---------- LISTA ---------- */
 .barra{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.barra-acc{display:flex;gap:8px}
-.icono{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--brown);display:grid;place-items:center;padding:0;transition:background .2s,border-color .2s}
-.icono:hover{border-color:var(--brown)}
-.icono[aria-expanded="true"]{background:var(--brown);border-color:var(--brown);color:var(--ground)}
-.icono svg,.buscar-box svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.titulo-lista{text-align:center}
+.buscar-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;font-size:17px;border-radius:12px;min-height:48px}
+.buscar-btn svg,.buscar-box svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .buscar-box{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--brown);border-radius:12px;padding:4px 8px 4px 14px;animation:aparece .25s ease-out}
 .buscar-box svg{color:var(--muted);flex:none}
 .buscar-box input{flex:1;min-width:0;border:0;background:none;outline:none;padding:10px 0;font-size:17px}
@@ -153,10 +149,12 @@ main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env
 .btn:hover{border-color:var(--brown)}
 .btn.main{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn.peligro{background:var(--danger);border-color:var(--danger);color:var(--surface)}
-.resumen{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.resumen > div{background:var(--surface);padding:16px 18px;display:grid;gap:2px}
+.resumen{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:color-mix(in srgb,var(--ground) 25%,var(--brown));border-radius:14px;overflow:hidden}
+.resumen > div{background:var(--brown);color:var(--ground);padding:16px 18px;display:grid;gap:2px}
+.resumen .label{color:color-mix(in srgb,var(--ground) 72%,var(--brown))}
 .resumen .big{font-size:24px;font-weight:500}
-.resumen .sub{font-size:13px;color:var(--muted)}
+.resumen .big.falta{color:var(--resumen-alerta)}
+.resumen .sub{font-size:13px;color:color-mix(in srgb,var(--ground) 72%,var(--brown))}
 @media (max-width:820px){.resumen{grid-template-columns:1fr 1fr}}
 
 .tabla{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
@@ -218,39 +216,47 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-/* ================= tarjetas: iPhone y iPad en vertical ================= */
-@media (max-width:900px){
-  .tabla{border:0;background:none;overflow:visible}
-  table{min-width:0}
-  thead{display:none}
-  table,tbody,tfoot{display:block}
-  tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-           grid-template-areas:"no nombre nombre" "pers pers trans" "total adel liq" "acc acc acc";
-           gap:12px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
-  tbody tr:hover{background:var(--surface)}
-  tbody td{border:0;padding:0;white-space:normal;text-align:left;min-width:0}
-  td.c-no{grid-area:no;align-self:center}
-  td.c-no .no{font-size:22px}
-  td.c-nombre{grid-area:nombre;font-size:18px;min-width:0;align-self:center;overflow-wrap:anywhere}
-  td.c-pers{grid-area:pers}
-  td.c-trans{grid-area:trans;text-align:right}
-  td.c-total{grid-area:total}
-  td.c-adel{grid-area:adel}
-  td.c-liq{grid-area:liq;text-align:right}
-  td.c-total,td.c-adel,td.c-liq{font-size:14px;border-top:1px solid var(--line);padding-top:10px}
-  td.c-acc{grid-area:acc;border-top:1px solid var(--line);padding-top:10px}
-  td[data-label]::before{content:attr(data-label);display:block;font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
-  .solo-tel{display:inline}
-  .acc{width:100%;justify-content:space-between}
-  td.vacio{display:block}
-  tfoot tr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;border-top:2px solid var(--brown);padding:12px 2px}
-  tfoot td{background:none;border:0;padding:0}
-  tfoot td.c-vacio{display:none}
-}
-/* iPad en vertical: dos tarjetas por fila */
-@media (min-width:601px) and (max-width:900px){
+/* ================= reservas: tarjetas desplegables ================= */
+.tabla{border:0;background:none;overflow:visible}
+table{min-width:0}
+thead{display:none}
+table,tbody,tfoot{display:block}
+tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+         grid-template-areas:"cab cab cab" "acomp acomp acomp" "pers pers trans" "total adel liq" "acc acc acc";
+         gap:12px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 14px;margin-bottom:10px}
+tbody tr.abierta{padding-bottom:14px}
+tbody tr:hover{background:var(--surface)}
+tbody tr:not(.abierta){grid-template-areas:"cab cab cab";row-gap:0}
+tbody tr:not(.abierta) > td:not(.c-cab){display:none}
+tbody tr.abierta > td:not(.c-cab){animation:aparece .25s ease-out}
+tbody td{border:0;padding:0;white-space:normal;text-align:left;min-width:0}
+td.c-cab{grid-area:cab}
+.abrir{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;background:none;border:0;padding:10px 0;min-height:52px;text-align:left}
+.abrir .no{font-size:20px;min-width:3.2ch}
+.abrir .nombre{font-size:18px;min-width:0;overflow-wrap:anywhere}
+.abrir .chev{transform:rotate(45deg);margin-top:-4px}
+tr.abierta .abrir .chev{transform:rotate(-135deg);margin-top:4px}
+td.c-acomp{grid-area:acomp;margin-top:-10px}
+td.c-acomp .acomp-txt{margin:0}
+td.c-pers{grid-area:pers}
+td.c-trans{grid-area:trans;text-align:right}
+td.c-pers,td.c-trans{border-top:1px solid var(--line);padding-top:12px}
+td.c-total{grid-area:total}
+td.c-adel{grid-area:adel}
+td.c-liq{grid-area:liq;text-align:right}
+td.c-total,td.c-adel,td.c-liq{font-size:14px;border-top:1px solid var(--line);padding-top:10px}
+td.c-acc{grid-area:acc;border-top:1px solid var(--line);padding-top:10px}
+td[data-label]::before{content:attr(data-label);display:block;font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.solo-tel{display:inline}
+.acc{width:100%;justify-content:space-between}
+td.vacio{display:block}
+tfoot tr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;border-top:2px solid var(--brown);padding:12px 2px}
+tfoot td{background:none;border:0;padding:0}
+tfoot td.c-vacio{display:none}
+/* iPad y pantallas grandes: dos tarjetas por fila */
+@media (min-width:601px){
   tbody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
-  tbody tr{margin:0;padding:16px 18px}
+  tbody tr{margin:0;padding-left:18px;padding-right:18px}
   tbody tr:has(.vacio){grid-column:1/-1}
   tfoot tr{margin-top:14px}
 }
@@ -261,6 +267,8 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
   .field input,.filtros input,.dinero-in input{font-size:16px}          /* evita el zoom automático de iOS */
   .top{padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;border-bottom-width:1px}
   .brand{font-size:21px;padding:0}
+  .logo{height:38px}
+  .brand-fila{gap:10px}
   /* pestañas abajo, al alcance del pulgar */
   .tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);
         padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);gap:0}
@@ -277,8 +285,6 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
   .paso{width:54px;height:54px;font-size:28px}
   #personas{font-size:46px}
   .kg-unit{font-size:22px;padding-right:2px}
-  .rapidos{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
-  .rapidos button{flex:none}
   .sino{align-self:stretch}
   .sino button{flex:1}
   #total{font-size:40px}
@@ -301,7 +307,7 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
 <body>
 
 <div class="top">
-  <div class="brand">Libreta de Reservas<small id="syncTop" role="status"></small></div>
+  <div class="brand"><span class="brand-fila">Libreta de Reservas<img class="logo" src="logo.png" alt="Del Cofre · hongos gourmet" width="112" height="180"></span><small id="syncTop" role="status"></small></div>
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-registro" data-screen="registro" aria-selected="true">REGISTRO</button>
     <button class="tab" role="tab" id="tab-lista" data-screen="lista" aria-selected="false">LISTA</button>
@@ -336,7 +342,6 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
             <span class="kg-unit" id="personasTxt">pers.</span>
             <button class="paso" type="button" id="mas" aria-label="Agregar una persona">+</button>
           </div>
-          <div class="rapidos" id="rapidos"></div>
           <div class="previa" id="lugares" role="status"></div>
         </div>
 
@@ -400,19 +405,16 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
 
   <!-- LISTA -->
   <section class="screen" id="lista" hidden>
-    <div class="barra">
-      <h2>Lista de reservas</h2>
-      <div class="barra-acc">
-        <button class="icono" id="compartirBtn" type="button" aria-label="Compartir lista" title="Compartir lista"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M8 10.5H6.5A1.5 1.5 0 0 0 5 12v7.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V12a1.5 1.5 0 0 0-1.5-1.5H16"/></svg></button>
-        <button class="icono" id="lupaBtn" type="button" aria-label="Buscar" title="Buscar" aria-expanded="false" aria-controls="buscarBox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+    <h2 class="titulo-lista">Lista de reservas</h2>
+    <button class="btn main exportar" id="csvBtn" type="button">Exportar a Excel (CSV)</button>
+    <div class="fila-buscar">
+      <button class="btn buscar-btn" id="lupaBtn" type="button" aria-expanded="false" aria-controls="buscarBox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><span>Buscar</span></button>
+      <div class="buscar-box" id="buscarBox" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input id="buscar" type="search" placeholder="Buscar nombre" autocomplete="off" aria-label="Buscar por nombre">
+        <button class="link" type="button" id="cerrarBuscar">Cancelar</button>
       </div>
     </div>
-    <div class="buscar-box" id="buscarBox" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
-      <input id="buscar" type="search" placeholder="Buscar nombre" autocomplete="off" aria-label="Buscar por nombre">
-      <button class="link" type="button" id="cerrarBuscar">Cancelar</button>
-    </div>
-    <button class="btn main exportar" id="csvBtn" type="button">Exportar a Excel (CSV)</button>
     <div class="resumen" id="resumen"></div>
     <div class="tabla">
       <table>
@@ -626,7 +628,6 @@ function actualizar(){
 
   // personas
   $("#menos").disabled = f.personas <= 1;
-  $("#rapidos").innerHTML = [1,2,3,4,5,6,8,10].map(n=>`<button type="button" data-n="${n}" aria-pressed="${n===f.personas}">${n}</button>`).join("");
   const desde = editando && lugares[form.id] ? lugares[form.id][0] : siguiente;
   const despues = editando ? ordenadas().filter(r=>r.creado > form.creado).length : 0;
   $("#lugares").innerHTML = `${editando ? "Ocupará" : "Ocuparán"} ${f.personas===1?"el lugar":"los lugares"} <strong>${fLugares([desde, desde+f.personas-1])}</strong>`
@@ -678,7 +679,6 @@ function mensaje(t, err){ $("#msg").textContent = t||""; $("#msg").classList.tog
 function ponerPersonas(n){ form.personas = Math.max(1, Math.min(999, n)); $("#personas").value = form.personas; mensaje(""); actualizar(); }
 $("#mas").addEventListener("click", ()=>ponerPersonas(formReserva().personas + 1));
 $("#menos").addEventListener("click", ()=>ponerPersonas(formReserva().personas - 1));
-$("#rapidos").addEventListener("click", e=>{ const b=e.target.closest("[data-n]"); if(b) ponerPersonas(Number(b.dataset.n)); });
 $("#personas").addEventListener("input", ()=>{ form.personas = $("#personas").value; actualizar(); });
 $("#personas").addEventListener("blur", ()=>ponerPersonas(formReserva().personas));
 $("#nombre").addEventListener("input", ()=>{ form.nombre = $("#nombre").value; mensaje(""); });
@@ -723,7 +723,7 @@ function registrar(){
   formNuevo();
   if (editando) {
     toast(`Reserva de ${nombre} actualizada · lugares ${lugar}`);
-    resaltar = r.id; ir("lista");
+    resaltar = r.id; abiertas.add(r.id); ir("lista");
   } else {
     toast(`Reserva registrada · ${pers(r.personas)} · lugares ${lugar}`);
     if (!tactil) $("#nombre").focus(); else document.activeElement?.blur();
@@ -746,13 +746,15 @@ $("#borrarEdicion").addEventListener("click", ()=>{
 
 /* ============ LISTA ============ */
 const filtro = { q:"", borrar:null };
+const abiertas = new Set();   // reservas desplegadas en LISTA
 let resaltar = null;
 $("#buscar").addEventListener("input", ()=>{ filtro.q = $("#buscar").value.trim().toLowerCase(); renderLista(); });
 function buscador(abrir){
   $("#buscarBox").hidden = !abrir;
+  $("#lupaBtn").hidden = abrir;
   $("#lupaBtn").setAttribute("aria-expanded", abrir);
   if (abrir) $("#buscar").focus();
-  else if (filtro.q) { $("#buscar").value = ""; filtro.q = ""; renderLista(); }
+  else { $("#lupaBtn").focus(); if (filtro.q) { $("#buscar").value = ""; filtro.q = ""; renderLista(); } }
 }
 $("#lupaBtn").addEventListener("click", ()=>buscador($("#buscarBox").hidden));
 $("#cerrarBuscar").addEventListener("click", ()=>buscador(false));
@@ -780,10 +782,12 @@ function renderLista(){
     return;
   }
   $("#filas").innerHTML = vis.map(r=>{
-    const e = estado(r), c = filtro.borrar === r.id;
-    return `<tr data-id="${r.id}" class="${resaltar===r.id?"recien":""}">
-      <td class="c-no"><span class="no">${fLugares(lugares[r.id])}</span></td>
-      <td class="c-nombre nombre">${esc(r.nombre)}${(a=>a.length ? `<span class="acomp-txt">${a.map(([k,n])=>`<b>${k}</b> ${esc(n)}`).join(" · ")}</span>` : "")(acompDe(r, lugares[r.id][0]))}</td>
+    const e = estado(r), c = filtro.borrar === r.id, abierta = abiertas.has(r.id);
+    return `<tr data-id="${r.id}" class="${resaltar===r.id?"recien":""} ${abierta?"abierta":""}">
+      <td class="c-cab"><button class="abrir" type="button" data-accion="abrir" aria-expanded="${abierta}">
+        <span class="no">${fLugares(lugares[r.id])}</span><span class="nombre">${esc(r.nombre)}</span><span class="chev" aria-hidden="true"></span>
+      </button></td>
+      ${(a=>a.length ? `<td class="c-acomp"><span class="acomp-txt">${a.map(([k,n])=>`<b>${k}</b> ${esc(n)}`).join(" · ")}</span></td>` : "")(acompDe(r, lugares[r.id][0]))}
       <td class="c-pers"><span class="mini-paso">
         <button type="button" data-accion="menos" aria-label="Quitar una persona a ${esc(r.nombre)}" ${r.personas<=1?"disabled":""}>−</button>
         <span class="num">${r.personas}</span>
@@ -811,6 +815,7 @@ $("#filas").addEventListener("click", e=>{
   const id = b.closest("tr").dataset.id, r = datos.reservas[id];
   if (!r || r.deleted) return;
   const accion = b.dataset.accion;
+  if (accion === "abrir") { abiertas.has(id) ? abiertas.delete(id) : abiertas.add(id); renderLista(); return; }
   if (accion === "editar") return formEditar(id);
   if (accion === "mas" || accion === "menos") {
     const n = r.personas + (accion==="mas" ? 1 : -1);
@@ -832,23 +837,6 @@ $("#filas").addEventListener("click", e=>{
   }
 });
 
-function textoLista(){
-  const { lugares } = numerar();
-  const todas = ordenadas();
-  const lineas = [`Lista de reservas · ${pers(todas.reduce((s,r)=>s+r.personas,0))}`, ""];
-  todas.forEach(r=>{
-    lineas.push(`${fLugares(lugares[r.id])}. ${r.nombre} (${r.personas}) · Transporte: ${r.transporte?"Sí":"No"} · Total ${dinero(totalDe(r))} · Adelanto ${dinero(r.adelanto||0)} · ${estado(r).txt}`);
-    const a = acompDe(r, lugares[r.id][0]);
-    if (a.length) lineas.push(`    Con: ${a.map(([k,n])=>`${k}. ${n}`).join(", ")}`);
-  });
-  return lineas.join("\n");
-}
-$("#compartirBtn").addEventListener("click", async ()=>{
-  if (!vivas().length) return toast("La lista está vacía");
-  const texto = textoLista();
-  if (navigator.share) { try { await navigator.share({ title:"Lista de reservas", text:texto }); } catch(e){} return; }
-  try { await navigator.clipboard.writeText(texto); toast("Lista copiada"); } catch(e){ toast("No se pudo copiar"); }
-});
 $("#csvBtn").addEventListener("click", ()=>{
   const todas = ordenadas();
   if (!todas.length) return toast("No hay reservas para exportar");
