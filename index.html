@@ -55,7 +55,7 @@ input[type=number]{-moz-appearance:textfield}
 /* barra superior */
 .top{position:sticky;top:0;z-index:5;background:var(--ground);border-bottom:2px solid var(--brown);padding:calc(14px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 0 calc(24px + env(safe-area-inset-left,0px));display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
 .brand{font-family:var(--serif);font-size:26px;color:var(--brown);padding-bottom:12px;line-height:1}
-.logo{height:52px;width:auto;flex:none;align-self:center;margin-bottom:6px;filter:var(--logo-filtro)}
+.logo{height:46px;width:auto;flex:none;align-self:center;margin-bottom:12px;filter:var(--logo-filtro)}
 .tabs{display:flex;gap:4px;margin-left:auto}
 .tab{background:none;border:0;padding:10px 22px 12px;color:var(--muted);border-bottom:4px solid transparent;margin-bottom:-2px;display:grid;place-items:center}
 .tab svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -108,7 +108,7 @@ main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env
 .precios .nota{grid-column:1/-1;margin:0;color:var(--muted);font-size:13px}
 
 .sino{display:inline-flex;border:2px solid var(--brown);border-radius:999px;overflow:hidden;align-self:start}
-.sino button{border:0;background:transparent;padding:12px 36px;min-height:48px;font-weight:700;font-size:17px;color:var(--brown);transition:background .2s,color .2s}
+.sino button{flex:1;border:0;background:transparent;padding:12px 36px;min-height:48px;font-weight:700;font-size:17px;color:var(--brown);transition:background .2s,color .2s}
 .sino button + button{border-left:2px solid var(--brown)}
 .sino button[aria-pressed="true"]{background:var(--brown);color:var(--ground)}
 .sino.falta{border-color:var(--danger)}
