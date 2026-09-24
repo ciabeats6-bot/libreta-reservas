@@ -54,7 +54,7 @@ input[type=number]{-moz-appearance:textfield}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 
-main{max-width:1080px;margin:0 auto;padding:24px calc(24px + env(safe-area-inset-right,0px)) calc(48px + env(safe-area-inset-bottom,0px)) calc(24px + env(safe-area-inset-left,0px))}
+main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env(safe-area-inset-right,0px)) calc(48px + env(safe-area-inset-bottom,0px)) calc(24px + env(safe-area-inset-left,0px))}
 .screen{display:grid;grid-template-columns:minmax(0,1fr);gap:28px}
 .screen.entra-der{animation:entraDer .34s cubic-bezier(.22,.8,.26,1)}
 .screen.entra-izq{animation:entraIzq .34s cubic-bezier(.22,.8,.26,1)}
@@ -218,6 +218,43 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
+/* ================= tarjetas: iPhone y iPad en vertical ================= */
+@media (max-width:900px){
+  .tabla{border:0;background:none;overflow:visible}
+  table{min-width:0}
+  thead{display:none}
+  table,tbody,tfoot{display:block}
+  tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+           grid-template-areas:"no nombre nombre" "pers pers trans" "total adel liq" "acc acc acc";
+           gap:12px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+  tbody tr:hover{background:var(--surface)}
+  tbody td{border:0;padding:0;white-space:normal;text-align:left;min-width:0}
+  td.c-no{grid-area:no;align-self:center}
+  td.c-no .no{font-size:22px}
+  td.c-nombre{grid-area:nombre;font-size:18px;min-width:0;align-self:center;overflow-wrap:anywhere}
+  td.c-pers{grid-area:pers}
+  td.c-trans{grid-area:trans;text-align:right}
+  td.c-total{grid-area:total}
+  td.c-adel{grid-area:adel}
+  td.c-liq{grid-area:liq;text-align:right}
+  td.c-total,td.c-adel,td.c-liq{font-size:14px;border-top:1px solid var(--line);padding-top:10px}
+  td.c-acc{grid-area:acc;border-top:1px solid var(--line);padding-top:10px}
+  td[data-label]::before{content:attr(data-label);display:block;font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+  .solo-tel{display:inline}
+  .acc{width:100%;justify-content:space-between}
+  td.vacio{display:block}
+  tfoot tr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;border-top:2px solid var(--brown);padding:12px 2px}
+  tfoot td{background:none;border:0;padding:0}
+  tfoot td.c-vacio{display:none}
+}
+/* iPad en vertical: dos tarjetas por fila */
+@media (min-width:601px) and (max-width:900px){
+  tbody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+  tbody tr{margin:0;padding:16px 18px}
+  tbody tr:has(.vacio){grid-column:1/-1}
+  tfoot tr{margin-top:14px}
+}
+
 /* ================= iPhone / pantallas angostas ================= */
 @media (max-width:600px){
   body{font-size:16px}
@@ -256,33 +293,6 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
   .resumen > div{padding:12px 14px}
   .resumen .big{font-size:19px}
 
-  /* tabla → tarjetas */
-  .tabla{border:0;background:none;overflow:visible}
-  table{min-width:0}
-  thead{display:none}
-  table,tbody,tfoot{display:block}
-  tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-           grid-template-areas:"no nombre nombre" "pers pers trans" "total adel liq" "acc acc acc";
-           gap:12px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
-  tbody tr:hover{background:var(--surface)}
-  tbody td{border:0;padding:0;white-space:normal;text-align:left;min-width:0}
-  td.c-no{grid-area:no;align-self:center}
-  td.c-no .no{font-size:22px}
-  td.c-nombre{grid-area:nombre;font-size:18px;min-width:0;align-self:center;overflow-wrap:anywhere}
-  td.c-pers{grid-area:pers}
-  td.c-trans{grid-area:trans;text-align:right}
-  td.c-total{grid-area:total}
-  td.c-adel{grid-area:adel}
-  td.c-liq{grid-area:liq;text-align:right}
-  td.c-total,td.c-adel,td.c-liq{font-size:14px;border-top:1px solid var(--line);padding-top:10px}
-  td.c-acc{grid-area:acc;border-top:1px solid var(--line);padding-top:10px}
-  td[data-label]::before{content:attr(data-label);display:block;font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
-  .solo-tel{display:inline}
-  .acc{width:100%;justify-content:space-between}
-  td.vacio{display:block}
-  tfoot tr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;border-top:2px solid var(--brown);padding:12px 2px}
-  tfoot td{background:none;border:0;padding:0}
-  tfoot td.c-vacio{display:none}
   .bloque .acciones{width:100%}
   .bloque .acciones .btn{flex:1}
 }
