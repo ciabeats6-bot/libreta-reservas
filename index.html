@@ -9,6 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Reservas">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>try{var t=localStorage.getItem("libreta-tema");if(t)document.documentElement.dataset.tema=t;}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icono-180.png">
 <title>Libreta de Reservas</title>
@@ -19,13 +20,22 @@
   --serif:ui-serif,"New York",Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"Helvetica Neue",sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --logo-filtro:none;
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){
-  :root{
+/* Modo noche: sigue al teléfono, salvo que se elija en CONFIGURACIÓN (data-tema en <html>) */
+:root[data-tema="oscuro"]{
     color-scheme:dark;
     --ground:#1C1510; --surface:#261D16; --ink:#F2E7CF; --muted:#B5A185; --line:#3A2C20;
     --accent:#F0C136; --accent-ink:#1C1510; --brown:#D8B48A; --soft:#33271B; --danger:#E0795F; --ok:#9CC47A; --resumen-alerta:#8E2F1D;
+    --logo-filtro:drop-shadow(0 0 1px rgba(250,244,225,.95)) drop-shadow(0 0 5px rgba(250,244,225,.35));
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-tema="claro"]){
+      color-scheme:dark;
+      --ground:#1C1510; --surface:#261D16; --ink:#F2E7CF; --muted:#B5A185; --line:#3A2C20;
+      --accent:#F0C136; --accent-ink:#1C1510; --brown:#D8B48A; --soft:#33271B; --danger:#E0795F; --ok:#9CC47A; --resumen-alerta:#8E2F1D;
+      --logo-filtro:drop-shadow(0 0 1px rgba(250,244,225,.95)) drop-shadow(0 0 5px rgba(250,244,225,.35));
   }
 }
 *{box-sizing:border-box}
@@ -45,13 +55,11 @@ input[type=number]{-moz-appearance:textfield}
 /* barra superior */
 .top{position:sticky;top:0;z-index:5;background:var(--ground);border-bottom:2px solid var(--brown);padding:calc(14px + env(safe-area-inset-top,0px)) calc(24px + env(safe-area-inset-right,0px)) 0 calc(24px + env(safe-area-inset-left,0px));display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
 .brand{font-family:var(--serif);font-size:26px;color:var(--brown);padding-bottom:12px;line-height:1}
-.brand-fila{display:flex;align-items:center;gap:14px}
-.logo{height:52px;width:auto;flex:none}
-.brand small{display:block;font-family:var(--sans);font-size:12px;color:var(--muted);margin-top:6px;line-height:1.2}
-.brand small:empty{display:none}
-.brand small.err{color:var(--danger);font-weight:600}
-.tabs{display:flex;gap:4px}
-.tab{background:none;border:0;padding:10px 18px 12px;font-size:17px;font-weight:600;color:var(--muted);border-bottom:4px solid transparent;margin-bottom:-2px;letter-spacing:.06em}
+.logo{height:52px;width:auto;flex:none;align-self:center;margin-bottom:6px;filter:var(--logo-filtro)}
+.tabs{display:flex;gap:4px;margin-left:auto}
+.tab{background:none;border:0;padding:10px 22px 12px;color:var(--muted);border-bottom:4px solid transparent;margin-bottom:-2px;display:grid;place-items:center}
+.tab svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab svg .punto{fill:currentColor;stroke:none}
 .tab{transition:color .2s ease,border-color .25s ease}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
@@ -75,7 +83,7 @@ main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env
 .paso{width:64px;height:64px;flex:none;border-radius:10px;border:0;background:var(--soft);font-size:32px;font-weight:500;color:var(--brown)}
 .paso:hover{background:var(--line)}
 .paso:disabled{opacity:.4}
-#personas{flex:1;min-width:0;width:0;border:0;background:transparent;text-align:right;font-family:var(--mono);font-size:64px;font-weight:500;line-height:1;padding:4px 0;outline:none}
+#personas{flex:1;min-width:0;width:0;border:0;background:transparent;text-align:center;font-family:var(--mono);font-size:64px;font-weight:500;line-height:1;padding:4px 0;outline:none}
 .kg-unit{font-family:var(--serif);font-size:28px;color:var(--muted);padding-right:8px}
 .previa{color:var(--muted);font-size:16px;min-height:1.4em}
 .previa strong{color:var(--ink);font-family:var(--mono);font-weight:600}
@@ -124,7 +132,13 @@ main{max-width:1080px;margin:0 auto;overflow-x:clip;padding:24px calc(24px + env
 .msg.err{color:var(--danger);font-weight:600}
 .link{background:none;border:0;color:var(--brown);font-weight:600;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
 .link.peligro{color:var(--danger)}
-.edicion-acciones{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.edicion-acciones{display:grid;gap:12px}
+.col-cobro{display:grid;gap:16px;align-content:start}
+.btn.ancho{width:100%;padding:14px;font-size:17px;border-radius:12px;min-height:50px}
+.btn.btn-peligro{background:var(--danger);border-color:var(--danger);color:var(--surface)}
+.btn.btn-peligro:hover{border-color:var(--danger);filter:brightness(.95)}
+.btn.btn-peligro.confirm{box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 35%,transparent)}
+.nota-extra{margin:0;color:var(--muted);font-size:14px}
 
 .aviso{background:var(--soft);border:1px solid var(--accent);border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-weight:500}
 .aviso.editando{border-color:var(--brown);border-width:2px}
@@ -169,11 +183,7 @@ tbody tr.recien{animation:recien 1.6s ease-out}
 @keyframes recien{from{background:var(--soft)}}
 .no{font-family:var(--mono);font-weight:700;color:var(--brown);font-size:17px}
 .nombre{font-weight:600;white-space:normal;min-width:150px}
-.mini-paso{display:inline-flex;align-items:center;gap:8px}
-.mini-paso button{width:32px;height:32px;border-radius:50%;border:0;background:var(--soft);color:var(--brown);font-size:19px;font-weight:600;line-height:1}
-.mini-paso button:hover{background:var(--line)}
-.mini-paso button:disabled{opacity:.35}
-.mini-paso .num{min-width:2ch;text-align:center;font-size:17px;font-weight:600}
+.personas-num{font-size:18px;font-weight:600}
 .si-no{font-weight:600}
 .si-no.no-t{color:var(--muted);font-weight:500}
 .estado{font-weight:600}
@@ -210,6 +220,29 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
 .gh-form .nota{grid-column:1/-1;font-size:14px}
 .gh-form .acciones{grid-column:1/-1}
 @media (max-width:820px){.gh-form{grid-template-columns:1fr}}
+
+/* interruptor tipo iOS */
+.ajuste{cursor:pointer}
+.interruptor{-webkit-appearance:none;appearance:none;flex:none;width:51px;height:31px;border-radius:999px;background:var(--line);position:relative;margin:0;cursor:pointer;transition:background .25s ease}
+.interruptor::before{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.22,.8,.26,1)}
+.interruptor:checked{background:var(--brown)}
+.interruptor:checked::before{transform:translateX(20px)}
+.interruptor:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* estado del respaldo, al pie de cada pantalla */
+.sync-pie{text-align:center;font-size:12px;color:var(--muted);opacity:.6;margin:32px 0 0}
+.sync-pie:empty{display:none}
+.sync-pie.err{color:var(--danger);opacity:1;font-weight:600}
+
+/* pantalla de inicio (splash) */
+.splash{position:fixed;inset:0;z-index:100;background:var(--ground);display:grid;place-items:center}
+.splash img{width:min(46vw,200px);height:auto;opacity:0;filter:var(--logo-filtro);animation:splashLogo 1.5s ease-in-out forwards}
+@keyframes splashLogo{0%{opacity:0;transform:scale(.9)}40%{opacity:1;transform:scale(1)}72%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05)}}
+.splash.fuera{animation:splashFuera .45s ease forwards}
+@keyframes splashFuera{to{opacity:0;visibility:hidden}}
+body.entrando .top,body.entrando main,body.entrando .tabs{animation:entradaApp .6s cubic-bezier(.22,.8,.26,1) both}
+@keyframes entradaApp{from{opacity:0;transform:translateY(14px) scale(.985)}}
+@media (prefers-reduced-motion:reduce){.splash img{opacity:1}}
 
 /* aviso flotante */
 .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;background:var(--brown);color:var(--ground);padding:14px 22px;border-radius:12px;font-weight:600;font-size:16px;transition:opacity .2s,transform .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20}
@@ -267,12 +300,12 @@ tfoot td.c-vacio{display:none}
   .field input,.filtros input,.dinero-in input{font-size:16px}          /* evita el zoom automático de iOS */
   .top{padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;border-bottom-width:1px}
   .brand{font-size:21px;padding:0}
-  .logo{height:38px}
-  .brand-fila{gap:10px}
+  .top{align-items:center}
+  .logo{height:40px;margin:0}
   /* pestañas abajo, al alcance del pulgar */
   .tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);
         padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);gap:0}
-  .tab{flex:1;margin:0;padding:12px 2px 14px;font-size:12px;letter-spacing:.04em;border-bottom:0;border-top:3px solid transparent}
+  .tab{flex:1;margin:0;padding:11px 2px 13px;border-bottom:0;border-top:3px solid transparent}
   .tab[aria-selected="true"]{border-top-color:var(--accent);border-bottom:0}
   main{padding:16px 16px calc(96px + env(safe-area-inset-bottom,0px))}
   .screen{gap:20px}
@@ -305,14 +338,16 @@ tfoot td.c-vacio{display:none}
 </style>
 </head>
 <body>
+<div class="splash" id="splash" aria-hidden="true"><img src="logo.png" alt="" width="336" height="540"></div>
 
 <div class="top">
-  <div class="brand"><span class="brand-fila">Libreta de Reservas<img class="logo" src="logo.png" alt="Del Cofre · hongos gourmet" width="112" height="180"></span><small id="syncTop" role="status"></small></div>
+  <div class="brand">Libreta de Reservas</div>
   <nav class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-registro" data-screen="registro" aria-selected="true">REGISTRO</button>
-    <button class="tab" role="tab" id="tab-lista" data-screen="lista" aria-selected="false">LISTA</button>
-    <button class="tab" role="tab" id="tab-configuracion" data-screen="configuracion" aria-selected="false">CONFIGURACIÓN</button>
+    <button class="tab" role="tab" id="tab-registro" data-screen="registro" aria-selected="true" aria-label="Registro" title="Registro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><path d="M19 8v6M16 11h6"/></svg></button>
+    <button class="tab" role="tab" id="tab-lista" data-screen="lista" aria-selected="false" aria-label="Lista" title="Lista"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle class="punto" cx="4.5" cy="6" r="1.4"/><circle class="punto" cx="4.5" cy="12" r="1.4"/><circle class="punto" cx="4.5" cy="18" r="1.4"/></svg></button>
+    <button class="tab" role="tab" id="tab-configuracion" data-screen="configuracion" aria-selected="false" aria-label="Configuración" title="Configuración"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
   </nav>
+  <img class="logo" src="logo.png" alt="Del Cofre · hongos gourmet" width="336" height="540">
 </div>
 
 <main>
@@ -329,7 +364,6 @@ tfoot td.c-vacio{display:none}
     </div>
     <div class="aviso editando" id="editando" hidden>
       <span id="editandoTxt"></span>
-      <button class="btn" type="button" id="cancelarEdicion">Cancelar edición</button>
     </div>
 
     <div class="venta">
@@ -339,7 +373,6 @@ tfoot td.c-vacio{display:none}
           <div class="kilos-box">
             <button class="paso" type="button" id="menos" aria-label="Quitar una persona">−</button>
             <input id="personas" type="number" min="1" step="1" inputmode="numeric" autocomplete="off">
-            <span class="kg-unit" id="personasTxt">pers.</span>
             <button class="paso" type="button" id="mas" aria-label="Agregar una persona">+</button>
           </div>
           <div class="previa" id="lugares" role="status"></div>
@@ -375,6 +408,7 @@ tfoot td.c-vacio{display:none}
         </div>
       </div>
 
+      <div class="col-cobro">
       <div class="cobro">
         <div class="total-fila">
           <label class="label" for="total">Total</label>
@@ -396,9 +430,21 @@ tfoot td.c-vacio{display:none}
         <button class="registrar" id="registrar" type="button">Registrar reserva</button>
         <div class="msg" id="msg" role="status"></div>
         <div class="edicion-acciones" id="edicionAcciones" hidden>
-          <button class="link" type="button" id="cancelarEdicion2">Cancelar edición</button>
-          <button class="del" type="button" id="borrarEdicion">Borrar reserva</button>
+          <button class="btn ancho" type="button" id="cancelarEdicion2">Cancelar edición</button>
+          <button class="btn ancho btn-peligro" type="button" id="borrarEdicion">Cancelar reserva</button>
         </div>
+      </div>
+
+      <details class="bloque" id="extraBloque" hidden>
+        <summary class="bloque-cab"><span class="bloque-tit"><h3>Monto extra</h3><span class="estado-gh" id="extraEstado">Sin monto extra</span></span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="bloque-cuerpo">
+          <p class="nota-extra">Se suma al total de esta reserva; por ejemplo, un cargo adicional.</p>
+          <div class="field">
+            <label class="label" for="extra">Extra $</label>
+            <div class="dinero-in"><span>$</span><input id="extra" type="number" min="0" step="1" inputmode="decimal" placeholder="0"></div>
+          </div>
+        </div>
+      </details>
       </div>
     </div>
   </section>
@@ -407,6 +453,7 @@ tfoot td.c-vacio{display:none}
   <section class="screen" id="lista" hidden>
     <h2 class="titulo-lista">Lista de reservas</h2>
     <button class="btn main exportar" id="csvBtn" type="button">Exportar a Excel (CSV)</button>
+    <div class="resumen" id="resumen"></div>
     <div class="fila-buscar">
       <button class="btn buscar-btn" id="lupaBtn" type="button" aria-expanded="false" aria-controls="buscarBox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><span>Buscar</span></button>
       <div class="buscar-box" id="buscarBox" hidden>
@@ -415,7 +462,6 @@ tfoot td.c-vacio{display:none}
         <button class="link" type="button" id="cerrarBuscar">Cancelar</button>
       </div>
     </div>
-    <div class="resumen" id="resumen"></div>
     <div class="tabla">
       <table>
         <thead><tr><th>No.</th><th>Nombre completo</th><th>Personas</th><th>Transporte</th><th class="r">Total</th><th class="r">Adelanto</th><th class="r">Liquidación / faltante</th><th></th></tr></thead>
@@ -428,6 +474,13 @@ tfoot td.c-vacio{display:none}
   <!-- CONFIGURACIÓN -->
   <section class="screen" id="configuracion" hidden>
     <h2>Configuración</h2>
+
+    <div class="bloque">
+      <label class="bloque-cab ajuste" for="modoNoche">
+        <span class="bloque-tit"><h3>Modo noche</h3><span class="estado-gh" id="modoNocheEstado"></span></span>
+        <input type="checkbox" id="modoNoche" class="interruptor" role="switch">
+      </label>
+    </div>
 
     <details class="bloque" id="ghBloque">
       <summary class="bloque-cab"><span class="bloque-tit"><h3>Respaldo automático en GitHub</h3><span class="estado-gh" id="ghEstado"></span></span><span class="chev" aria-hidden="true"></span></summary>
@@ -462,6 +515,8 @@ tfoot td.c-vacio{display:none}
 
     <p class="nota" id="datosInfo"></p>
   </section>
+
+  <p class="sync-pie" id="syncTop" role="status"></p>
 </main>
 
 <div class="toast" id="toast" role="status"></div>
@@ -526,7 +581,7 @@ function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("sho
 // diferencia cuando el total se escribe a mano (descuentos, cortesías…).
 const unitario = r => (r.precioPersona||0) + (r.transporte ? (r.precioTransporte||0) : 0);
 const calculado = r => redondea(r.personas * unitario(r));
-const totalDe = r => redondea(Math.max(calculado(r) + (r.ajuste||0), 0));
+const totalDe = r => redondea(Math.max(calculado(r) + (r.ajuste||0) + (r.extra||0), 0));
 const faltaDe = r => redondea(totalDe(r) - (r.adelanto||0));
 
 // Numeración por persona, en el orden en que llegaron las reservas.
@@ -580,23 +635,25 @@ let form;   // lo que se está escribiendo en el formulario
 let confirmarBorrado = false;
 
 function formNuevo(){
-  form = { id:null, creado:null, personas:1, nombre:"", acompanantes:[], transporte:null, adelanto:"", ajuste:0,
+  form = { id:null, creado:null, personas:1, nombre:"", acompanantes:[], transporte:null, adelanto:"", ajuste:0, extra:"",
            precioPersona: datos.precios.persona||0, precioTransporte: datos.precios.transporte||0 };
   pintarForm();
 }
 function formEditar(id){
   const r = datos.reservas[id]; if (!r || r.deleted) return;
-  form = { ...r, adelanto: enCampo(r.adelanto), acompanantes: [...(r.acompanantes||[])] };
+  form = { ...r, adelanto: enCampo(r.adelanto), extra: enCampo(r.extra), acompanantes: [...(r.acompanantes||[])] };
   pintarForm();
   ir("registro");
   if (!tactil) $("#nombre").focus();
 }
-const formReserva = () => ({ ...form, personas: Math.max(1, parseInt(form.personas,10)||1), adelanto: numero(form.adelanto)||0 });
+const formReserva = () => ({ ...form, personas: Math.max(1, parseInt(form.personas,10)||1), adelanto: numero(form.adelanto)||0, extra: form.id ? Math.max(0, numero(form.extra)||0) : 0 });
 
 function pintarForm(){
   $("#personas").value = form.personas;
   $("#nombre").value = form.nombre;
   $("#adelanto").value = form.adelanto;
+  $("#extra").value = form.extra || "";
+  $("#extraBloque").open = !!numero(form.extra);
   $("#pPersona").value = enCampo(form.precioPersona);
   $("#pTransporte").value = enCampo(form.precioTransporte);
   $("#total").value = "";
@@ -654,6 +711,7 @@ function actualizar(){
     t = "Escribe el precio por persona o el total directamente.";
   }
   if (f.ajuste) t += ` · ajuste a mano ${f.ajuste>0?"+":""}${dinero(f.ajuste)}`;
+  if (f.extra) t += ` · extra +${dinero(f.extra)}`;
   $("#calc").textContent = t;
   $("#quitarAjuste").hidden = !f.ajuste || unitario(f) === 0;
 
@@ -667,8 +725,10 @@ function actualizar(){
   $("#registrar").textContent = editando ? "Guardar cambios" : "Registrar reserva";
   $("#editando").hidden = !editando;
   $("#edicionAcciones").hidden = !editando;
+  $("#extraBloque").hidden = !editando;
+  $("#extraEstado").textContent = f.extra ? `+${dinero(f.extra)} en el total` : "Sin monto extra";
   if (editando) $("#editandoTxt").innerHTML = `Editando la reserva de <strong>${esc(datos.reservas[form.id]?.nombre || form.nombre)}</strong>${lugares[form.id] ? ` · lugares ${fLugares(lugares[form.id])}` : ""}`;
-  $("#borrarEdicion").textContent = confirmarBorrado ? "¿Seguro? Borrar" : "Borrar reserva";
+  $("#borrarEdicion").textContent = confirmarBorrado ? "Toca otra vez para cancelar la reserva" : "Cancelar reserva";
   $("#borrarEdicion").classList.toggle("confirm", confirmarBorrado);
 
   pintarAcomp(desde);
@@ -688,10 +748,12 @@ $("#sino").addEventListener("click", e=>{
 });
 $("#pPersona").addEventListener("input", ()=>{ form.precioPersona = Math.max(0, numero($("#pPersona").value)||0); actualizar(); });
 $("#pTransporte").addEventListener("input", ()=>{ form.precioTransporte = Math.max(0, numero($("#pTransporte").value)||0); actualizar(); });
+$("#extra").addEventListener("input", ()=>{ form.extra = $("#extra").value; actualizar(); });
 $("#adelanto").addEventListener("input", ()=>{ form.adelanto = $("#adelanto").value; mensaje(""); actualizar(); });
 $("#total").addEventListener("input", ()=>{
   const v = $("#total").value.trim();
-  form.ajuste = v === "" ? 0 : redondea(Math.max(0, numero(v)||0) - calculado(formReserva()));
+  const f = formReserva();
+  form.ajuste = v === "" ? 0 : redondea(Math.max(0, numero(v)||0) - calculado(f) - f.extra);
   actualizar();
 });
 $("#total").addEventListener("blur", actualizar);
@@ -714,6 +776,7 @@ function registrar(){
     adelanto: redondea(f.adelanto),
     precioPersona: redondea(f.precioPersona||0), precioTransporte: redondea(f.precioTransporte||0),
     ajuste: redondea(f.ajuste||0),
+    extra: redondea(f.extra||0),
   };
   if (!editando && (r.precioPersona !== datos.precios.persona || r.precioTransporte !== datos.precios.transporte)) {
     datos.precios = { persona: r.precioPersona, transporte: r.precioTransporte, updatedAt: Date.now() };
@@ -732,7 +795,6 @@ function registrar(){
 $("#registrar").addEventListener("click", registrar);
 
 function cancelarEdicion(){ const id = form.id; formNuevo(); resaltar = id; ir("lista"); }
-$("#cancelarEdicion").addEventListener("click", cancelarEdicion);
 $("#cancelarEdicion2").addEventListener("click", cancelarEdicion);
 $("#borrarEdicion").addEventListener("click", ()=>{
   if (!confirmarBorrado) {
@@ -740,8 +802,8 @@ $("#borrarEdicion").addEventListener("click", ()=>{
     setTimeout(()=>{ if (confirmarBorrado){ confirmarBorrado = false; actualizar(); } }, 4000);
     return;
   }
-  const nombre = form.nombre; quitarReserva(form.id);
-  formNuevo(); ir("lista"); toast(`Reserva de ${nombre} borrada`);
+  const nombre = form.nombre; abiertas.delete(form.id); quitarReserva(form.id);
+  formNuevo(); ir("lista"); toast(`Reserva de ${nombre} cancelada`);
 });
 
 /* ============ LISTA ============ */
@@ -788,12 +850,7 @@ function renderLista(){
         <span class="no">${fLugares(lugares[r.id])}</span><span class="nombre">${esc(r.nombre)}</span><span class="chev" aria-hidden="true"></span>
       </button></td>
       ${(a=>a.length ? `<td class="c-acomp"><span class="acomp-txt">${a.map(([k,n])=>`<b>${k}</b> ${esc(n)}`).join(" · ")}</span></td>` : "")(acompDe(r, lugares[r.id][0]))}
-      <td class="c-pers"><span class="mini-paso">
-        <button type="button" data-accion="menos" aria-label="Quitar una persona a ${esc(r.nombre)}" ${r.personas<=1?"disabled":""}>−</button>
-        <span class="num">${r.personas}</span>
-        <button type="button" data-accion="mas" aria-label="Agregar una persona a ${esc(r.nombre)}">+</button>
-        <span class="solo-tel">${r.personas===1?"persona":"personas"}</span>
-      </span></td>
+      <td class="c-pers" data-label="Personas"><span class="personas-num num">${r.personas}</span></td>
       <td class="c-trans" data-label="Transporte"><span class="si-no ${r.transporte?"":"no-t"}">${r.transporte?"Sí":"No"}</span></td>
       <td class="r num c-total" data-label="Total">${dinero(totalDe(r))}</td>
       <td class="r num c-adel" data-label="Adelanto">${dinero(r.adelanto||0)}</td>
@@ -817,14 +874,6 @@ $("#filas").addEventListener("click", e=>{
   const accion = b.dataset.accion;
   if (accion === "abrir") { abiertas.has(id) ? abiertas.delete(id) : abiertas.add(id); renderLista(); return; }
   if (accion === "editar") return formEditar(id);
-  if (accion === "mas" || accion === "menos") {
-    const n = r.personas + (accion==="mas" ? 1 : -1);
-    if (n < 1) return;
-    ponerReserva({ ...r, personas: n });
-    renderLista();
-    toast(`${r.nombre}: ${pers(n)} · lugares ${fLugares(numerar().lugares[id])}`);
-    return;
-  }
   if (accion === "borrar") {
     if (filtro.borrar !== id){
       filtro.borrar = id; renderLista();
@@ -983,7 +1032,7 @@ function pintarSync(){
     else if (gh.lastSync) { top = det = `✓ Respaldado ${hace(gh.lastSync)}`; cls = "ok"; }
   }
   $("#syncTop").textContent = top;
-  $("#syncTop").className = cls === "falta" ? "err" : "";
+  $("#syncTop").className = "sync-pie" + (cls === "falta" ? " err" : "");
   $("#ghEstado").textContent = det;
   $("#ghEstado").className = "estado-gh " + cls;
 }
@@ -1019,6 +1068,26 @@ window.addEventListener("pageshow", e=>{ if (e.persisted) sincronizar(); });
 window.addEventListener("focus", ()=>sincronizar());
 setInterval(()=>{ if (document.visibilityState==="visible") sincronizar(); else pintarSync(); }, 30000);
 
+/* ============ MODO NOCHE ============ */
+const CLAVE_TEMA = "libreta-tema";
+const sistemaOscuro = matchMedia("(prefers-color-scheme: dark)");
+function temaElegido(){ try { return localStorage.getItem(CLAVE_TEMA); } catch(e){ return null; } }
+function esOscuro(){ const t = temaElegido(); return t ? t === "oscuro" : sistemaOscuro.matches; }
+function aplicarTema(){
+  const t = temaElegido();
+  if (t) document.documentElement.dataset.tema = t; else delete document.documentElement.dataset.tema;
+  const oscuro = esOscuro();
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.content = oscuro ? "#1C1510" : "#FAF4E1");
+  $("#modoNoche").checked = oscuro;
+  $("#modoNocheEstado").textContent = (oscuro ? "Activado" : "Desactivado") + (t ? "" : " · como el teléfono");
+}
+$("#modoNoche").addEventListener("change", ()=>{
+  try { localStorage.setItem(CLAVE_TEMA, $("#modoNoche").checked ? "oscuro" : "claro"); } catch(e){}
+  aplicarTema();
+});
+sistemaOscuro.addEventListener("change", aplicarTema);
+aplicarTema();
+
 /* ============ iPhone: instalación y uso sin conexión ============ */
 if (location.protocol.startsWith("http")) {
   if ("serviceWorker" in navigator && location.protocol === "https:") {
@@ -1037,6 +1106,15 @@ $("#recargar").addEventListener("click", ()=>location.reload());
 $("#cerrarInstalar").addEventListener("click", ()=>{ $("#instalar").hidden = true; try{ localStorage.setItem("aviso-instalar","1"); }catch(e){} });
 
 /* ============ inicio ============ */
+// Splash solo al abrir la app desde cero (no al volver a ella desde segundo plano)
+(function(){
+  const splash = $("#splash"); if (!splash) return;
+  const breve = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(()=>{
+    splash.classList.add("fuera"); document.body.classList.add("entrando");
+    setTimeout(()=>{ splash.remove(); document.body.classList.remove("entrando"); }, 650);
+  }, breve ? 350 : 1450);
+})();
 formNuevo();
 pintarGithub();
 ir("registro");
