@@ -1,6 +1,6 @@
 // Guarda la app en el iPhone para que abra sin internet.
 // VERSION cambia en cada construcción, así los teléfonos reciben la versión nueva.
-const VERSION = "reservas-20260923182407";
+const VERSION = "reservas-20260923182756";
 const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "icono-180.png", "icono-192.png", "icono-512.png"];
 
 self.addEventListener("install", e => {
