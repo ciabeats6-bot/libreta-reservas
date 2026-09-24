@@ -436,6 +436,7 @@ tfoot td{font-weight:700;background:var(--ground);border-top:2px solid var(--bro
         <p class="nota">Funciona sin internet: las reservas se guardan en el teléfono y se suben solas cuando hay conexión. Usa un repositorio <strong>privado</strong> y un token “fine-grained” con acceso solo a ese repositorio (permiso <em>Contents: Read and write</em>). El token se queda en este aparato y solo se envía a GitHub.</p>
         <div class="acciones">
           <button class="btn main" type="submit">Guardar y sincronizar</button>
+          <button class="btn" type="button" id="ghAhora">Sincronizar ahora</button>
           <button class="btn" type="button" id="ghQuitar">Desconectar</button>
         </div>
       </form>
@@ -888,6 +889,7 @@ $("#aceptarRestaurar").addEventListener("click", ()=>{
 /* ============ RESPALDO AUTOMÁTICO EN GITHUB ============ */
 const configurado = () => gh.owner && gh.repo && gh.token;
 let sincronizando = false, repetir = false, errorSync = "", timerSync;
+let syncVisible = false;   // las revisiones automáticas no muestran "Sincronizando…"
 
 function b64codificar(str){
   const bytes = new TextEncoder().encode(str); let bin = "";
@@ -937,7 +939,9 @@ async function sincronizar(manual = false){
   if (!configurado()) { pintarSync(); return; }
   if (!navigator.onLine) { if (manual) toast("Sin conexión: las reservas siguen guardadas en el teléfono"); pintarSync(); return; }
   if (sincronizando) { repetir = true; return; }
-  sincronizando = true; errorSync = ""; pintarSync();
+  sincronizando = true; errorSync = "";
+  syncVisible = manual || datos.rev !== datos.syncedRev;
+  pintarSync();
   try {
     for (let intento = 0; intento < 3; intento++) {
       const res = await github("GET");
@@ -984,7 +988,7 @@ function pintarSync(){
   const pend = datos.rev !== datos.syncedRev;
   let top = "", det = "No configurado", cls = "";
   if (configurado()) {
-    if (sincronizando) { top = det = "Sincronizando…"; }
+    if (sincronizando && syncVisible) { top = det = "Sincronizando…"; }
     else if (errorSync) { top = det = "⚠︎ " + errorSync; cls = "falta"; }
     else if (!navigator.onLine) { top = det = pend ? "Sin conexión · guardado en el teléfono" : "Sin conexión"; }
     else if (pend) { top = det = "Cambios por subir…"; }
@@ -1005,6 +1009,7 @@ function renderConfiguracion(){
 function pintarGithub(){
   $("#ghOwner").value = gh.owner; $("#ghRepo").value = gh.repo; $("#ghToken").value = gh.token;
   $("#ghQuitar").hidden = !configurado();
+  $("#ghAhora").hidden = !configurado();
   pintarSync();
 }
 $("#ghForm").addEventListener("submit", e=>{
@@ -1017,10 +1022,14 @@ $("#ghQuitar").addEventListener("click", ()=>{
   gh = { owner:"", repo:"", path:"reservas.json", token:"", lastSync:null };
   escribir(CLAVE_GH, gh); errorSync = ""; pintarGithub(); toast("GitHub desconectado; las reservas siguen en este aparato");
 });
+$("#ghAhora").addEventListener("click", ()=>sincronizar(true));
 window.addEventListener("online", ()=>sincronizar());
 window.addEventListener("offline", pintarSync);
+// Trae los cambios de otros aparatos: al volver a la app y cada 30 s mientras está a la vista.
 document.addEventListener("visibilitychange", ()=>{ if (document.visibilityState==="visible") sincronizar(); });
-setInterval(pintarSync, 60000);
+window.addEventListener("pageshow", e=>{ if (e.persisted) sincronizar(); });
+window.addEventListener("focus", ()=>sincronizar());
+setInterval(()=>{ if (document.visibilityState==="visible") sincronizar(); else pintarSync(); }, 30000);
 
 /* ============ iPhone: instalación y uso sin conexión ============ */
 if (location.protocol.startsWith("http")) {
