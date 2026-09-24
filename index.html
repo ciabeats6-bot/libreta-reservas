@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#FAF4E1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1C1510" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -40,6 +40,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}   /* sin zoom por doble toque */
 [hidden]{display:none!important}
 body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
 button,input{font:inherit;color:inherit}
@@ -1069,6 +1070,11 @@ document.addEventListener("visibilitychange", ()=>{ if (document.visibilityState
 window.addEventListener("pageshow", e=>{ if (e.persisted) sincronizar(); });
 window.addEventListener("focus", ()=>sincronizar());
 setInterval(()=>{ if (document.visibilityState==="visible") sincronizar(); else pintarSync(); }, 30000);
+
+/* ============ SIN ZOOM ============ */
+// Safari en iOS puede ignorar user-scalable=no; se bloquea el gesto de pellizcar directamente.
+["gesturestart", "gesturechange", "gestureend"].forEach(ev => document.addEventListener(ev, e => e.preventDefault(), { passive: false }));
+document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
 /* ============ MODO NOCHE ============ */
 const CLAVE_TEMA = "libreta-tema";
